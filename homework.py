@@ -1,7 +1,7 @@
 from _datetime import datetime as dt
 
-cash_records = []
-calories_records = []
+
+records = []
 
 
 class Calculator:
@@ -17,34 +17,29 @@ class Calculator:
         return dfr_is
 
 
-class CaloriesCalculator(Calculator):
-
     def add_record(self):
-        pass
+        Record.add_records(self)
 
     def get_today_stats(self):
         pass
+
+
+    def get_week_stats(self):
+        pass
+
+
+class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self):
         pass
 
-    def get_week_stats(self):
-        pass
 
 
 class CashCalculator(Calculator):
 
-    def add_record(self):
+    def get_today_cash_remained(self, currency):
         pass
 
-    def get_today_stats(self):
-        pass
-
-    def get_todat_cash_remained(self, currency):
-        pass
-
-    def get_week_stats(self):
-        pass
 
 
 class Record:
@@ -53,6 +48,7 @@ class Record:
         self.comment = comment
         self.date = date
         Record.add_records(self)
+
 
     def add_records(self):
         record = {'amount': self.amount,
