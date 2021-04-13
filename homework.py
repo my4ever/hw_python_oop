@@ -1,8 +1,6 @@
 import datetime as dt
 
 
-# Date by default
-today = dt.datetime.strptime(dt.date.today().strftime('%d.%m.%Y'), '%d.%m.%Y')
 
 
 # Main calculator
@@ -14,43 +12,34 @@ class Calculator:
         self.records = []
 
     # Adding record to main records variable
-    def add_record(self, record):
+    def add_record(self, record) :
         self.records.append(record)
 
     # Getting statistic for a day
-    def get_today_stats(self, date=today):
+    def get_today_stats(self, date=dt.date.today()):
 
         amount = 0
+        date = fixing_date(date)
 
-        # Checking fot date type
-        if isinstance(date, str):
-            self.date = dt.datetime.strptime(date, '%d.%m.%Y')
-        else:
-            self.date = date
         # Getting the amount of spent for a day
         for added in self.records:
-            if self.date == added.date:
+            if date == added.date:
                 amount += added.amount
         return amount
 
     #  Getting weekly statistic
-    def get_week_stats(self, date=today):
+    def get_week_stats(self, date=dt.date.today()):
 
         # Declaring variables
+        date = fixing_date(date)
         week = dt.timedelta(days=8)
         day = dt.timedelta(days=1)
-        week_before = today - week
+        week_before = date - week
         amount = 0
-
-        # Checking for date type
-        if isinstance(date, str):
-            self.date = dt.datetime.strptime(date, '%d.%m.%Y')
-        else:
-            self.date = date
 
         # Counting how much did client spent for a week
         for added in self.records:
-            if week_before < added.date and added.date < (self.date + day):
+            if week_before < added.date and added.date < (date + day):
                 amount += added.amount
         return amount
 
@@ -58,17 +47,11 @@ class Calculator:
 # Calories calculator
 class CaloriesCalculator(Calculator):
 
-
-    def get_calories_remained(self, date=today):
+    def get_calories_remained(self, date=dt.date.today()):
 
         # Declaring variables
         count_of_calories = 0
-
-        # Checking for date type
-        if isinstance(date, str):
-            self.date = redo_date(date)
-        else:
-            self.date = date
+        date = fixing_date(date)
 
         # Getting amount of calories that been eaten for a day
         for record in self.records:
@@ -85,24 +68,21 @@ class CaloriesCalculator(Calculator):
         else:
             return 'Хватит есть!'
 
-
 # Money calculator
 class CashCalculator(Calculator):
 
+    USD_RATE = 77.0
+    EURO_RATE = 92.0
+
     # Getting cash amount remained for a day
-    def get_today_cash_remained(self, currency='rub', date=today):
+    def get_today_cash_remained(self, currency='rub'):
 
         # Declaring variables
-        self.USD_RATE = 77.0
-        self.EURO_RATE = 92.0
         spent_amount = 0
         self.currency = currency.lower()
+        date = dt.date.today()
 
-        # Checking for date type
-        if isinstance(date, str):
-            self.date = redo_date(date)
-        else:
-            self.date = date
+
 
         # Checking for correct currency input
         if self.currency not in ('usd', 'eur', 'rub'):
@@ -110,7 +90,7 @@ class CashCalculator(Calculator):
 
         # Getting amount of spending for a day
         for transfer in self.records:
-            if self.date == transfer.date:
+            if date == transfer.date:
                 spent_amount += transfer.amount
 
         # Getting the difference between limit and spending
@@ -125,12 +105,12 @@ class CashCalculator(Calculator):
         if self.currency == 'rub':
             if difference > 0:
                 return ('На сегодня осталось '
-                        f' {"{:.2f}".format(difference)} руб')
+                        f'{"{:.2f}".format(float(difference))} руб')
             elif difference < 0:
                 # Getting rid of minus symbol
                 difference = int(str(difference).strip('-'))
                 return ('Денег нет, держись: твой долг - '
-                        f'{"{:.2f}".format(difference)} руб')
+                        f'{"{:.2f}".format(float(difference))} руб')
 
         elif self.currency == 'usd':
             if difference > 0:
@@ -156,15 +136,15 @@ class CashCalculator(Calculator):
 
 class Record:
 
-    def __init__(self, amount, comment, date=today):
+    def __init__(self, amount, comment, date=dt.date.today()):
         self.amount = amount
         self.comment = comment
-        self.date = dt.datetime.strptime(date, '%d.%m.%Y')
+        self.date = fixing_date(date)
 
-calc = CashCalculator(1000)
-r1 = calc.add_record(Record(amount=145, comment='Безудержный шопинг', date='06.04.2021'))
-r2 = calc.add_record(Record(amount=145, comment='Безудержный шопинг', date='10.04.2021'))
-r3 = calc.add_record(Record(amount=145, comment='Безудержный шопинг', date='13.04.2021'))
+# Checking if date type is str
+def fixing_date(date):
 
-print(calc.get_week_stats())
-print(calc.get_today_cash_remained('usd'))
+    if type(date) == str:
+        date_info = date.split('.')
+        date = dt.date(int(date_info[2]), int(date_info[1]), int(date_info[0]))
+    return date
