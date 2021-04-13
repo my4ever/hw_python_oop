@@ -78,7 +78,8 @@ class CashCalculator(Calculator):
                            'rub': 'руб'}
         # Checking for correct currency input
         if currency not in currency_list:
-            return 'Введите пожалуйта одну из возможных валют: rub, usd, eur'
+            return ('Введите пожалуйта одну из возможных валют: ' 
+                    f'{", ".join(currency_list.keys())}')
         # Getting amount of spending for a day
         for transfer in self.records:
             if date == transfer.date:
