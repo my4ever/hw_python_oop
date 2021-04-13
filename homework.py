@@ -84,15 +84,15 @@ class CashCalculator(Calculator):
             if date == transfer.date:
                 spent_amount += transfer.amount
         # Getting the difference between limit and spending
-        difference = self.limit - spent_amount
-        if difference > 0:
+        money_left = self.limit - spent_amount
+        if money_left > 0:
             return ('На сегодня осталось '
-                    f'{"{:.2f}".format(difference / currency_list[currency])} '
+                    f'{"{:.2f}".format(money_left / currency_list[currency])} '
                     f'{currency_output[currency]}')
-        elif difference < 0:
-            difference = int(str(difference).strip('-'))
+        elif money_left < 0:
+            money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
-                    f'{"{:.2f}".format(difference / currency_list[currency])} '
+                    f'{"{:.2f}".format(money_left / currency_list[currency])} '
                     f'{currency_output[currency]}')
         else:
             return 'Денег нет, держись'
