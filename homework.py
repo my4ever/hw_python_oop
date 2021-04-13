@@ -14,7 +14,7 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self, date=dt.date.today()):
-        # Getting statistic for a day'
+        # Getting statistic for a day
         amount = 0
         date = fixing_date(date)
         # Getting the amount of spent for a day
@@ -70,8 +70,15 @@ class CashCalculator(Calculator):
         spent_amount = 0
         currency = currency.lower()
         date = dt.date.today()
+        currency_list = {'usd': self.USD_RATE,
+                         'eur': self.EURO_RATE,
+                         'rub': float(1)}
+
+        currency_outputt = {'usd': 'USD',
+                            'eur': 'Euro',
+                            'rub': 'руб'}
         # Checking for correct currency input
-        if currency not in ('usd', 'eur', 'rub'):
+        if currency not in currency_list:
             return 'Введите пожалуйта одну из возможных валют: rub, usd, eur'
         # Getting amount of spending for a day
         for transfer in self.records:
@@ -79,38 +86,18 @@ class CashCalculator(Calculator):
                 spent_amount += transfer.amount
         # Getting the difference between limit and spending
         difference = self.limit - spent_amount
-        # Universal answer if limit is equal to zero
+
         if difference == 0:
             return 'Денег нет, держись'
-        # Checking up on currency request
-        if currency == 'rub':
-            if difference > 0:
-                return ('На сегодня осталось '
-                        f'{"{:.2f}".format(float(difference))} руб')
-            elif difference < 0:
-                # Getting rid of minus symbol
-                difference = int(str(difference).strip('-'))
-                return ('Денег нет, держись: твой долг - '
-                        f'{"{:.2f}".format(float(difference))} руб')
-        elif currency == 'usd':
-            if difference > 0:
-                return ('На сегодня осталось '
-                        f'{"{:.2f}".format(difference / self.USD_RATE)} USD')
-            elif difference < 0:
-                # Getting rid of minus symbol
-                difference = int(str(difference).strip('-'))
-                return ('Денег нет, держись: твой долг - '
-                        f'{"{:.2f}".format(difference / self.USD_RATE)} USD')
-        elif currency == 'eur':
-            if difference > 0:
-                return ('На сегодня осталось '
-                        f'{"{:.2f}".format(difference / self.EURO_RATE)} Euro')
-
-            elif difference < 0:
-                # Getting rid of minus symbol
-                difference = int(str(difference).strip('-'))
-                return ('Денег нет, держись: твой долг - '
-                        f'{"{:.2f}".format(difference / self.EURO_RATE)} Euro')
+        elif difference > 0:
+            return ('На сегодня осталось '
+                    f'{"{:.2f}".format(difference / currency_list[currency])} '
+                    f'{currency_outputt[currency]}')
+        elif difference < 0:
+            difference = int(str(difference).strip('-'))
+            return ('Денег нет, держись: твой долг - '
+                    f'{"{:.2f}".format(difference / currency_list[currency])} '
+                    f'{currency_outputt[currency]}')
 
 
 class Record:
@@ -126,3 +113,8 @@ def fixing_date(date):
         date_info = date.split('.')
         date = dt.date(int(date_info[2]), int(date_info[1]), int(date_info[0]))
     return date
+
+
+cal = CashCalculator(1000)
+r1 = cal.add_record(Record(amount=1200, comment='test'))
+print(cal.get_today_cash_remained('USD'))
