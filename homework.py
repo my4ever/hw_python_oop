@@ -32,7 +32,7 @@ class Calculator:
         amount = 0
         # Counting how much did client spent for a week
         for added in self.records:
-            if week_before < added.date and added.date < (date + day):
+            if week_before < added.date < (date + day):
                 amount += added.amount
         return amount
 
@@ -68,10 +68,10 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency='rub'):
         # Declaring variables
         spent_amount = 0
-        self.currency = currency.lower()
+        currency = currency.lower()
         date = dt.date.today()
         # Checking for correct currency input
-        if self.currency not in ('usd', 'eur', 'rub'):
+        if currency not in ('usd', 'eur', 'rub'):
             return 'Введите пожалуйта одну из возможных валют: rub, usd, eur'
         # Getting amount of spending for a day
         for transfer in self.records:
@@ -83,7 +83,7 @@ class CashCalculator(Calculator):
         if difference == 0:
             return 'Денег нет, держись'
         # Checking up on currency request
-        if self.currency == 'rub':
+        if currency == 'rub':
             if difference > 0:
                 return ('На сегодня осталось '
                         f'{"{:.2f}".format(float(difference))} руб')
@@ -92,7 +92,7 @@ class CashCalculator(Calculator):
                 difference = int(str(difference).strip('-'))
                 return ('Денег нет, держись: твой долг - '
                         f'{"{:.2f}".format(float(difference))} руб')
-        elif self.currency == 'usd':
+        elif currency == 'usd':
             if difference > 0:
                 return ('На сегодня осталось '
                         f'{"{:.2f}".format(difference / self.USD_RATE)} USD')
@@ -101,7 +101,7 @@ class CashCalculator(Calculator):
                 difference = int(str(difference).strip('-'))
                 return ('Денег нет, держись: твой долг - '
                         f'{"{:.2f}".format(difference / self.USD_RATE)} USD')
-        elif self.currency == 'eur':
+        elif currency == 'eur':
             if difference > 0:
                 return ('На сегодня осталось '
                         f'{"{:.2f}".format(difference / self.EURO_RATE)} Euro')
