@@ -70,16 +70,13 @@ class CashCalculator(Calculator):
         spent_amount = 0
         currency = currency.lower()
         date = dt.date.today()
-        currency_list = {'usd': self.USD_RATE,
-                         'eur': self.EURO_RATE,
-                         'rub': float(1)}
-        currency_output = {'usd': 'USD',
-                           'eur': 'Euro',
-                           'rub': 'руб'}
+        crnc_ls = {'usd': [self.USD_RATE, 'USD'],
+                   'eur': [self.EURO_RATE, 'Euro'],
+                   'rub': [1.0, 'руб']}
         # Checking for correct currency input
-        if currency not in currency_list:
+        if currency not in crnc_ls:
             return ('Введите пожалуйта одну из возможных валют: '
-                    f'{", ".join(currency_list.keys())}')
+                    f'{", ".join(crnc_ls.keys())}')
         # Getting amount of spending for a day
         for transfer in self.records:
             if date == transfer.date:
@@ -88,13 +85,13 @@ class CashCalculator(Calculator):
         money_left = self.limit - spent_amount
         if money_left > 0:
             return ('На сегодня осталось '
-                    f'{"{:.2f}".format(money_left / currency_list[currency])} '
-                    f'{currency_output[currency]}')
+                    f'{"{:.2f}".format(money_left / crnc_ls[currency][0])} '
+                    f'{crnc_ls[currency][1]}')
         elif money_left < 0:
             money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
-                    f'{"{:.2f}".format(money_left / currency_list[currency])} '
-                    f'{currency_output[currency]}')
+                    f'{"{:.2f}".format(money_left / crnc_ls[currency][0])} '
+                    f'{crnc_ls[currency][1]}')
         else:
             return 'Денег нет, держись'
 
