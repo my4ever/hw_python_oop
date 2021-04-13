@@ -73,10 +73,9 @@ class CashCalculator(Calculator):
         currency_list = {'usd': self.USD_RATE,
                          'eur': self.EURO_RATE,
                          'rub': float(1)}
-
-        currency_outputt = {'usd': 'USD',
-                            'eur': 'Euro',
-                            'rub': 'руб'}
+        currency_output = {'usd': 'USD',
+                           'eur': 'Euro',
+                           'rub': 'руб'}
         # Checking for correct currency input
         if currency not in currency_list:
             return 'Введите пожалуйта одну из возможных валют: rub, usd, eur'
@@ -86,18 +85,17 @@ class CashCalculator(Calculator):
                 spent_amount += transfer.amount
         # Getting the difference between limit and spending
         difference = self.limit - spent_amount
-
-        if difference == 0:
-            return 'Денег нет, держись'
-        elif difference > 0:
+        if difference > 0:
             return ('На сегодня осталось '
                     f'{"{:.2f}".format(difference / currency_list[currency])} '
-                    f'{currency_outputt[currency]}')
+                    f'{currency_output[currency]}')
         elif difference < 0:
             difference = int(str(difference).strip('-'))
             return ('Денег нет, держись: твой долг - '
                     f'{"{:.2f}".format(difference / currency_list[currency])} '
-                    f'{currency_outputt[currency]}')
+                    f'{currency_output[currency]}')
+        else:
+            return 'Денег нет, держись'
 
 
 class Record:
@@ -107,14 +105,10 @@ class Record:
         self.date = fixing_date(date)
 
 
-# Checking if date type is str
 def fixing_date(date):
+    # Checking if date type is str
     if type(date) == str:
-        date_info = date.split('.')
-        date = dt.date(int(date_info[2]), int(date_info[1]), int(date_info[0]))
+        date = dt.date(int(date.split('.')[2]),
+                       int(date.split('.')[1]),
+                       int(date.split('.')[0]))
     return date
-
-
-cal = CashCalculator(1000)
-r1 = cal.add_record(Record(amount=1200, comment='test'))
-print(cal.get_today_cash_remained('USD'))
