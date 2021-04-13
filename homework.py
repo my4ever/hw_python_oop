@@ -87,7 +87,7 @@ class CashCalculator(Calculator):
         # Getting the difference between limit and spending
         money_left = self.limit - spent_amount
         if money_left > 0:
-            return ('На сегодня осталось'
+            return ('На сегодня осталось '
                     f'{"{:.2f}".format(money_left / currency_list[currency])} '
                     f'{currency_output[currency]}')
         elif money_left < 0:
