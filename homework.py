@@ -101,7 +101,6 @@ class Record:
 def fixing_date(date):
     # Checking if date type is str
     if type(date) == str:
-        date = dt.date(int(date.split('.')[2]),
-                       int(date.split('.')[1]),
-                       int(date.split('.')[0]))
+        day, month, year = date.split('.')
+        date = dt.date(int(year), int(month), int(day))
     return date
