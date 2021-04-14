@@ -14,25 +14,17 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self, date=dt.date.today()):
-        # Getting statistic for a day
-        amount = 0
+        # Declaring variables
         date = fixing_date(date)
-        # Getting the amount of spent for a day
-        for added in self.records:
-            if date == added.date:
-                amount += added.amount
-        return amount
+        return sum(i.amount for i in self.records if date == i.date)
 
     def get_week_stats(self, date=dt.date.today()):
         # Declaring variables
         date = fixing_date(date)
         week = dt.timedelta(days=7)
         week_before = date - week
-        amount = 0
-        # Counting how much did client spent for a week
-        for added in self.records:
-            if week_before < added.date <= date:
-                amount += added.amount
+        amount = sum(i.amount for i in self.records
+                     if week_before < i.date <= date)
         return amount
 
 
@@ -40,14 +32,10 @@ class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
         # Declaring variables
-        count_of_calories = 0
         date = fixing_date(date)
-        # Getting amount of calories that been eaten for a day
-        for record in self.records:
-            if record.date == date:
-                count_of_calories += record.amount
+        calories = sum(i.amount for i in self.records if date == i.date)
         # Getting difference between limit and eaten calories per a day
-        difference = self.limit - count_of_calories
+        difference = self.limit - calories
         # Returning smg for client
         if difference > 0:
             return ('Сегодня можно съесть что-нибудь ещё, но с общей '
@@ -62,9 +50,9 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency='rub'):
         # Declaring variables
-        spent_amount = 0
         currency = currency.lower()
         date = dt.date.today()
+        spent_amount = sum(i.amount for i in self.records if date == i.date)
         curs = {'rub': {'rate': 1.0, 'name': 'руб'},
                 'usd': {'rate': self.USD_RATE, 'name': 'USD'},
                 'eur': {'rate': self.EURO_RATE, 'name': 'Euro'}}
@@ -72,10 +60,6 @@ class CashCalculator(Calculator):
         if currency not in curs:
             return ('Введите пожалуйта одну из возможных валют: '
                     f'{", ".join(curs.keys())}')
-        # Getting amount of spending for a day
-        for transfer in self.records:
-            if date == transfer.date:
-                spent_amount += transfer.amount
         # Getting the difference between limit and spending
         money_left = self.limit - spent_amount
         if money_left > 0:
@@ -100,7 +84,7 @@ class Record:
 
 def fixing_date(date):
     # Checking if date type is str
-    if type(date) == str:
+    if type(date) is str:
         day, month, year = date.split('.')
         date = dt.date(int(year), int(month), int(day))
     return date
