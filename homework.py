@@ -14,22 +14,20 @@ class Calculator:
         self.records = []
 
     def add_record(self, record):
-        # Adding record to main records variable'
+        # Adding record to main attribute records
         self.records.append(record)
 
     def get_today_stats(self, date=today):
-        # Declaring variables
+        # Declaring variable
         date = fixing_date(date)
         return sum(i.amount for i in self.records if date == i.date)
 
     def get_week_stats(self, date=today):
         # Declaring variables
         date = fixing_date(date)
-        week = dt.timedelta(days=7)
-        week_before = date - week
-        amount = sum(i.amount for i in self.records
-                     if week_before < i.date <= date)
-        return amount
+        week_before = date - dt.timedelta(days=7)
+        return sum(i.amount for i in self.records
+                   if week_before < i.date <= date)
 
 
 class CaloriesCalculator(Calculator):
