@@ -26,13 +26,12 @@ class Calculator:
     def get_week_stats(self, date=dt.date.today()):
         # Declaring variables
         date = fixing_date(date)
-        week = dt.timedelta(days=8)
-        day = dt.timedelta(days=1)
+        week = dt.timedelta(days=7)
         week_before = date - week
         amount = 0
         # Counting how much did client spent for a week
         for added in self.records:
-            if week_before < added.date < (date + day):
+            if week_before < added.date <= date:
                 amount += added.amount
         return amount
 
