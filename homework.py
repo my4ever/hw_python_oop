@@ -1,6 +1,10 @@
 import datetime as dt
 
 
+# Date by default
+today = dt.date.today()
+
+
 # Main calculator
 class Calculator:
 
@@ -13,12 +17,12 @@ class Calculator:
         # Adding record to main records variable'
         self.records.append(record)
 
-    def get_today_stats(self, date=dt.date.today()):
+    def get_today_stats(self, date=today):
         # Declaring variables
         date = fixing_date(date)
         return sum(i.amount for i in self.records if date == i.date)
 
-    def get_week_stats(self, date=dt.date.today()):
+    def get_week_stats(self, date=today):
         # Declaring variables
         date = fixing_date(date)
         week = dt.timedelta(days=7)
@@ -30,7 +34,7 @@ class Calculator:
 
 class CaloriesCalculator(Calculator):
 
-    def get_calories_remained(self, date=dt.date.today()):
+    def get_calories_remained(self, date=today):
         # Declaring variables
         date = fixing_date(date)
         calories = sum(i.amount for i in self.records if date == i.date)
@@ -76,7 +80,7 @@ class CashCalculator(Calculator):
 
 
 class Record:
-    def __init__(self, amount, comment, date=dt.date.today()):
+    def __init__(self, amount, comment, date=today):
         self.amount = amount
         self.comment = comment
         self.date = fixing_date(date)
