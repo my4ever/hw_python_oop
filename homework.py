@@ -40,19 +40,15 @@ class Calculator:
 class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
-
         # Declaring variables
         count_of_calories = 0
         date = fixing_date(date)
-
         # Getting amount of calories that been eaten for a day
         for record in self.records:
             if record.date == date:
                 count_of_calories += record.amount
-
         # Getting difference between limit and eaten calories per a day
         difference = self.limit - count_of_calories
-
         # Returning smg for client
         if difference > 0:
             return ('Сегодня можно съесть что-нибудь ещё, но с общей '
