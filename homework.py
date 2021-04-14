@@ -68,7 +68,6 @@ class CashCalculator(Calculator):
         curs = {'rub': {'rate': 1.0, 'name': 'руб'},
                 'usd': {'rate': self.USD_RATE, 'name': 'USD'},
                 'eur': {'rate': self.EURO_RATE, 'name': 'Euro'}}
-
         # Checking for correct currency input
         if currency not in curs:
             return ('Введите пожалуйта одну из возможных валют: '
