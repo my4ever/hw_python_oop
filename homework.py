@@ -15,7 +15,7 @@ class Calculator:
 
     def get_today_stats(self, date=dt.date.today()):
         """Declaring variable"""
-        date = fixing_date(date)
+        date = date if date is not str else fixing_date(date)
         return sum(i.amount for i in self.records if date == i.date)
 
     def get_week_stats(self, date=dt.date.today()):
@@ -27,7 +27,7 @@ class Calculator:
 
     def get_limit_left(self, date=dt.date.today()):
         """Declaring variables"""
-        date = fixing_date(date)
+        date = date if date is not str else fixing_date(date)
         return (self.limit - sum(i.amount for i in self.records
                 if date == i.date))
 
@@ -36,7 +36,7 @@ class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
         # Declaring variables
-        date = fixing_date(date)
+        date = date if date is not str else fixing_date(date)
         # Getting difference between limit and eaten calories per a day
         calories_left = self.get_limit_left(date)
         # Returning smg for client
@@ -88,3 +88,10 @@ def fixing_date(date):
         day, month, year = date.split('.')
         date = dt.date(int(year), int(month), int(day))
     return date
+
+
+calc = CashCalculator(1000)
+r1 = calc.add_record(Record(100, 'test'))
+print(calc.get_today_cash_remained('usd'))
+print(calc.get_today_cash_remained('eur'))
+print(calc.get_today_cash_remained())
