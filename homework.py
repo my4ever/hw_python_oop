@@ -25,15 +25,20 @@ class Calculator:
         return sum(i.amount for i in self.records
                    if week_before < i.date <= date)
 
+    def get_limit_left(self, date=dt.date.today()):
+        """Declaring variables"""
+        date = fixing_date(date)
+        return (self.limit - sum(i.amount for i in self.records
+                if date == i.date))
+
 
 class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
         # Declaring variables
         date = fixing_date(date)
-        calories = sum(i.amount for i in self.records if date == i.date)
         # Getting difference between limit and eaten calories per a day
-        difference = self.limit - calories
+        difference = self.get_limit_left(date)
         # Returning smg for client
         if difference > 0:
             return ('Сегодня можно съесть что-нибудь ещё, но с общей '
@@ -45,22 +50,21 @@ class CashCalculator(Calculator):
     RUB_RATE = 1.0
     USD_RATE = 60.0
     EURO_RATE = 70.0
-    curs = {'rub': (RUB_RATE, 'руб'),
-            'usd': (USD_RATE, 'USD'),
-            'eur': (EURO_RATE, 'Euro')}
+    CURRENCIES = {'rub': (RUB_RATE, 'руб'),
+                  'usd': (USD_RATE, 'USD'),
+                  'eur': (EURO_RATE, 'Euro')}
 
     def get_today_cash_remained(self, currency='rub'):
         """Declaring variables"""
         currency = currency.lower()
         date = dt.date.today()
-        spent_amount = self.get_today_stats(date)
-        rate, rate_name = self.curs[currency]
+        rate, rate_name = self.CURRENCIES[currency]
         # Checking for correct currency input
-        if currency not in self.curs:
+        if currency not in self.CURRENCIES:
             return ('Введите пожалуйта одну из возможных валют: '
-                    f'{", ".join(self.curs.keys())}')
+                    f'{", ".join(self.CURRENCIES.keys())}')
         # Getting the difference between limit and spending
-        money_left = self.limit - spent_amount
+        money_left = self.get_limit_left(date)
         if money_left > 0:
             return ('На сегодня осталось '
                     f'{"{:.2f}".format(money_left / rate)} {rate_name}')
