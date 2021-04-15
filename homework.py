@@ -65,6 +65,8 @@ class CashCalculator(Calculator):
                     f'{", ".join(self.CURRENCIES.keys())}')
         # Getting the difference between limit and spending
         money_left = self.get_limit_left(date)
+        if money_left == 0:
+            return 'Денег нет, держись'
         if money_left > 0:
             return ('На сегодня осталось '
                     f'{"{:.2f}".format(money_left / rate)} {rate_name}')
@@ -72,7 +74,6 @@ class CashCalculator(Calculator):
             money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
                     f'{"{:.2f}".format(money_left / rate)} {rate_name}')
-        return 'Денег нет, держись'
 
 
 class Record:
