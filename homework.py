@@ -13,30 +13,34 @@ class Calculator:
         """Adding record to main attribute records"""
         self.records.append(record)
 
-    def get_today_stats(self, date=dt.date.today()):
+    def get_today_stats(self, date=None):
         """Declaring variable"""
-        date = date if type(date) is not str else fixing_date(date)
+        date = (date if date is not None
+                and type(date) is not str else fixing_date(date))
         return sum(i.amount for i in self.records if date == i.date)
 
-    def get_week_stats(self, date=dt.date.today()):
+    def get_week_stats(self, date=None):
         """Declaring variables"""
-        date = date if type(date) is not str else fixing_date(date)
+        date = (date if date is not None
+                and type(date) is not str else fixing_date(date))
         week_before = date - dt.timedelta(days=7)
         return sum(i.amount for i in self.records
                    if week_before < i.date <= date)
 
-    def get_limit_left(self, date=dt.date.today()):
+    def get_limit_left(self, date=None):
         """Declaring variable"""
-        date = date if type(date) is not str else fixing_date(date)
+        date = (date if date is not None
+                and type(date) is not str else fixing_date(date))
         return (self.limit - sum(i.amount for i in self.records
                 if date == i.date))
 
 
 class CaloriesCalculator(Calculator):
 
-    def get_calories_remained(self, date=dt.date.today()):
+    def get_calories_remained(self, date=None):
         """Declaring variable"""
-        date = date if type(date) is not str else fixing_date(date)
+        date = (date if date is not None
+                and type(date) is not str else fixing_date(date))
         # Getting difference between limit and eaten calories per a day
         calories_left = self.get_limit_left(date)
         # Returning smg for client
@@ -58,34 +62,35 @@ class CashCalculator(Calculator):
         """Declaring variables"""
         currency = currency.lower()
         date = dt.date.today()
-        rate, rate_name = self.CURRENCIES[currency]
         # Checking for correct currency input
         if currency not in self.CURRENCIES:
             return ('Введите пожалуйта одну из возможных валют: '
                     f'{", ".join(self.CURRENCIES.keys())}')
+        rate, rate_name = self.CURRENCIES[currency]
         # Getting the difference between limit and spending
         money_left = self.get_limit_left(date)
         if money_left == 0:
             return 'Денег нет, держись'
-        if money_left > 0:
-            return ('На сегодня осталось '
-                    f'{"{:.2f}".format(money_left / rate)} {rate_name}')
         if money_left < 0:
             money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
                     f'{"{:.2f}".format(money_left / rate)} {rate_name}')
+        return ('На сегодня осталось '
+                f'{"{:.2f}".format(money_left / rate)} {rate_name}')
 
 
 class Record:
-    def __init__(self, amount, comment, date=dt.date.today()):
+    def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
-        self.date = date if type(date) is not str else fixing_date(date)
+        self.date = (date if date is not None
+                     and type(date) is not str else fixing_date(date))
 
 
 def fixing_date(date):
     """Checking if date type is str"""
     if type(date) is str:
         day, month, year = date.split('.')
-        date = dt.date(int(year), int(month), int(day))
-    return date
+        return dt.date(int(year), int(month), int(day))
+    if date is None:
+        return dt.date.today()
