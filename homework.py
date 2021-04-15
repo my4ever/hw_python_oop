@@ -20,7 +20,7 @@ class Calculator:
 
     def get_week_stats(self, date=dt.date.today()):
         """Declaring variables"""
-        date = fixing_date(date)
+        date = date if date is not str else fixing_date(date)
         week_before = date - dt.timedelta(days=7)
         return sum(i.amount for i in self.records
                    if week_before < i.date <= date)
@@ -88,10 +88,3 @@ def fixing_date(date):
         day, month, year = date.split('.')
         date = dt.date(int(year), int(month), int(day))
     return date
-
-
-calc = CashCalculator(1000)
-r1 = calc.add_record(Record(100, 'test'))
-print(calc.get_today_cash_remained('usd'))
-print(calc.get_today_cash_remained('eur'))
-print(calc.get_today_cash_remained())
