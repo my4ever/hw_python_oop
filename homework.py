@@ -38,11 +38,11 @@ class CaloriesCalculator(Calculator):
         # Declaring variables
         date = fixing_date(date)
         # Getting difference between limit and eaten calories per a day
-        difference = self.get_limit_left(date)
+        calories_left = self.get_limit_left(date)
         # Returning smg for client
-        if difference > 0:
+        if calories_left > 0:
             return ('Сегодня можно съесть что-нибудь ещё, но с общей '
-                    f'калорийностью не более {difference} кКал')
+                    f'калорийностью не более {calories_left} кКал')
         return 'Хватит есть!'
 
 
