@@ -15,19 +15,19 @@ class Calculator:
 
     def get_today_stats(self, date=dt.date.today()):
         """Declaring variable"""
-        date = date if date is not str else fixing_date(date)
+        date = date if type(date) is not str else fixing_date(date)
         return sum(i.amount for i in self.records if date == i.date)
 
     def get_week_stats(self, date=dt.date.today()):
         """Declaring variables"""
-        date = date if date is not str else fixing_date(date)
+        date = date if type(date) is not str else fixing_date(date)
         week_before = date - dt.timedelta(days=7)
         return sum(i.amount for i in self.records
                    if week_before < i.date <= date)
 
     def get_limit_left(self, date=dt.date.today()):
         """Declaring variable"""
-        date = date if date is not str else fixing_date(date)
+        date = date if type(date) is not str else fixing_date(date)
         return (self.limit - sum(i.amount for i in self.records
                 if date == i.date))
 
@@ -35,8 +35,8 @@ class Calculator:
 class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
-        """Declaring variables"""
-        date = date if date is not str else fixing_date(date)
+        """Declaring variable"""
+        date = date if type(date) is not str else fixing_date(date)
         # Getting difference between limit and eaten calories per a day
         calories_left = self.get_limit_left(date)
         # Returning smg for client
@@ -47,9 +47,9 @@ class CaloriesCalculator(Calculator):
 
 
 class CashCalculator(Calculator):
-    RUB_RATE = 1.0
-    USD_RATE = 60.0
-    EURO_RATE = 70.0
+    RUB_RATE = float(1)
+    USD_RATE = float(60)
+    EURO_RATE = float(70)
     CURRENCIES = {'rub': (RUB_RATE, 'руб'),
                   'usd': (USD_RATE, 'USD'),
                   'eur': (EURO_RATE, 'Euro')}
@@ -80,7 +80,7 @@ class Record:
     def __init__(self, amount, comment, date=dt.date.today()):
         self.amount = amount
         self.comment = comment
-        self.date = fixing_date(date)
+        self.date = date if type(date) is not str else fixing_date(date)
 
 
 def fixing_date(date):
