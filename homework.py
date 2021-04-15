@@ -26,7 +26,7 @@ class Calculator:
                    if week_before < i.date <= date)
 
     def get_limit_left(self, date=dt.date.today()):
-        """Declaring variables"""
+        """Declaring variable"""
         date = date if date is not str else fixing_date(date)
         return (self.limit - sum(i.amount for i in self.records
                 if date == i.date))
@@ -35,7 +35,7 @@ class Calculator:
 class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=dt.date.today()):
-        # Declaring variables
+        """Declaring variables"""
         date = date if date is not str else fixing_date(date)
         # Getting difference between limit and eaten calories per a day
         calories_left = self.get_limit_left(date)
