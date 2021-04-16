@@ -74,9 +74,9 @@ class CashCalculator(Calculator):
         if money_left < 0:
             money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
-                    f'{"{:.2f}".format(money_left / rate)} {rate_name}')
+                    f'{money_left / rate:.2f} {rate_name}')
         return ('На сегодня осталось '
-                f'{"{:.2f}".format(money_left / rate)} {rate_name}')
+                f'{money_left / rate:.2f} {rate_name}')
 
 
 class Record:
