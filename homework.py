@@ -92,5 +92,4 @@ def fixing_date(date):
     if type(date) is str:
         day, month, year = date.split('.')
         return dt.date(int(year), int(month), int(day))
-    if date is None:
-        return dt.date.today()
+    return dt.date.today()
