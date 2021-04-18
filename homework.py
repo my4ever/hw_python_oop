@@ -15,8 +15,8 @@ class Calculator:
 
     def get_today_stats(self, date=None):
         """Declaring variable"""
-        date = (date if date is not None
-                and type(date) is not str else fixing_date(date))
+        date = (date if date is not None and type(date) is not str
+                else fixing_date(date))
         return sum(i.amount for i in self.records if date == i.date)
 
     def get_week_stats(self, date=None):
@@ -29,8 +29,8 @@ class Calculator:
 
     def get_limit_left(self, date=None):
         """Declaring variable"""
-        date = (date if date is not None
-                and type(date) is not str else fixing_date(date))
+        date = (date if date is not None and type(date) is not str
+                else fixing_date(date))
         return (self.limit - sum(i.amount for i in self.records
                 if date == i.date))
 
@@ -39,8 +39,8 @@ class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self, date=None):
         """Declaring variable"""
-        date = (date if date is not None
-                and type(date) is not str else fixing_date(date))
+        date = (date if date is not None and type(date) is not str
+                else fixing_date(date))
         # Getting difference between limit and eaten calories per a day
         calories_left = self.get_limit_left(date)
         # Returning smg for client
@@ -60,31 +60,30 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency='rub'):
         """Declaring variables"""
-        currency = currency.lower()
         date = dt.date.today()
+        currency = currency.lower()
         # Checking for correct currency input
         if currency not in self.CURRENCIES:
             return ('Введите пожалуйта одну из возможных валют: '
                     f'{", ".join(self.CURRENCIES.keys())}')
         rate, rate_name = self.CURRENCIES[currency]
         # Getting the difference between limit and spending
-        money_left = self.get_limit_left(date)
+        money_left = self.get_limit_left(date) / rate
         if money_left == 0:
             return 'Денег нет, держись'
         if money_left < 0:
-            money_left = int(str(money_left).strip('-'))
             return ('Денег нет, держись: твой долг - '
-                    f'{money_left / rate:.2f} {rate_name}')
+                    f'{money_left * -1:.2f} {rate_name}')
         return ('На сегодня осталось '
-                f'{money_left / rate:.2f} {rate_name}')
+                f'{money_left:.2f} {rate_name}')
 
 
 class Record:
     def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
-        self.date = (date if date is not None
-                     and type(date) is not str else fixing_date(date))
+        self.date = (date if date is not None and type(date) is not str
+                     else fixing_date(date))
 
 
 def fixing_date(date):
